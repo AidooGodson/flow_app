@@ -1,9 +1,10 @@
 {
   "expo": {
-    "name": "mobileApp",
-    "slug": "mobileApp",
+    "name": "FLOW Water",
+    "slug": "flow",
     "version": "1.0.0",
     "orientation": "portrait",
+    "scheme": "flowwater",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
@@ -11,15 +12,29 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#1E1B72",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.qelz_developer.flow"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "@sentry/react-native"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "eca264f5-2871-4aa2-a7e0-46909e0f1db2"
+      }
+    },
+    "owner": "qelz_developer"
   }
 }

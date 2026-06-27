@@ -1,12 +1,26 @@
 {
   "name": "mobileapp",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "expo-router/entry",
   "dependencies": {
+    "@expo-google-fonts/inter": "^0.4.2",
+    "@react-native-community/datetimepicker": "9.1.0",
+    "@sentry/react-native": "~7.11.0",
     "expo": "~56.0.12",
+    "expo-constants": "~56.0.18",
+    "expo-font": "~56.0.7",
+    "expo-linking": "~56.0.14",
+    "expo-router": "~56.2.11",
+    "expo-secure-store": "~56.0.4",
     "expo-status-bar": "~56.0.4",
+    "nativewind": "^4.2.6",
     "react": "19.2.3",
-    "react-native": "0.85.3"
+    "react-native": "0.85.3",
+    "react-native-css-interop": "^0.2.6",
+    "react-native-reanimated": "^4.3.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "4.25.2",
+    "tailwindcss": "^3.4.19"
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
@@ -16,7 +30,14 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build:ios": "eas build --platform ios",
+    "build:android": "eas build --platform android",
+    "build:all": "eas build --platform all",
+    "build:preview": "eas build --profile preview --platform all",
+    "submit:ios": "eas submit --platform ios",
+    "submit:android": "eas submit --platform android",
+    "update": "eas update"
   },
   "private": true
 }
