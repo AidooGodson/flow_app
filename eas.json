@@ -25,7 +25,8 @@
       "env": {
         "EAS_BUILD_NO_EXPO_GO_WARNING": "true",
         "SENTRY_ORG": "flow-water",
-        "SENTRY_PROJECT": "flow-water"
+        "SENTRY_PROJECT": "flow-water",
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
       }
     }
   },
