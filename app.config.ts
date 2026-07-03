@@ -12,7 +12,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ...(config.plugins ?? []),
     ['@sentry/react-native/expo', {
       url: 'https://sentry.io/',
-      uploadDist: false,
+      organization: 'flow-water',
+      project: 'flow-water',
     }],
   ],
 });
