@@ -8,4 +8,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     ...config.extra,
     apiBaseUrl: process.env.API_BASE_URL,
   },
+  plugins: [
+    ...(config.plugins ?? []),
+    ['@sentry/react-native/expo', {
+      url: 'https://sentry.io/',
+      uploadDist: false,
+    }],
+  ],
 });
