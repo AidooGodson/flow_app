@@ -9,10 +9,14 @@ import {
   Inter_700Bold,
   Inter_800ExtraBold,
 } from '@expo-google-fonts/inter';
+import { useEffect } from 'react';
 import { View } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 import { colors } from '../constants/theme';
 import { UserProvider, useUser } from '../lib/UserContext';
 import { LoginScreen } from '../components/LoginScreen';
+
+SplashScreen.preventAutoHideAsync();
 
 const NAVY = colors.brand.navy;
 
@@ -32,9 +36,11 @@ export default function RootLayout() {
     Inter_800ExtraBold,
   });
 
-  if (!fontsLoaded) {
-    return <View style={{ flex: 1, backgroundColor: NAVY }} />;
-  }
+  useEffect(() => {
+    if (fontsLoaded) SplashScreen.hideAsync();
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) return null;
 
   return (
     <UserProvider>
