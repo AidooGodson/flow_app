@@ -1,13 +1,19 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
+import { tokenStore } from './tokenStore';
 import type { User } from './types';
 
-const STORE_KEY = 'flow_user';
+const STORE_KEY = 'flow_session';
+
+interface StoredSession {
+  user: User;
+  accessToken: string;
+}
 
 interface UserContextValue {
   user: User | null;
   loading: boolean;
-  setUser: (u: User) => Promise<void>;
+  setUser: (u: User, accessToken: string) => Promise<void>;
   clearUser: () => Promise<void>;
 }
 
@@ -25,21 +31,32 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     SecureStore.getItemAsync(STORE_KEY)
       .then((raw) => {
-        if (raw) setUserState(JSON.parse(raw) as User);
+        if (raw) {
+          const { user: u, accessToken } = JSON.parse(raw) as StoredSession;
+          tokenStore.set(accessToken);
+          setUserState(u);
+        }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);
 
-  async function setUser(u: User) {
-    await SecureStore.setItemAsync(STORE_KEY, JSON.stringify(u));
+  async function setUser(u: User, accessToken: string) {
+    const session: StoredSession = { user: u, accessToken };
+    await SecureStore.setItemAsync(STORE_KEY, JSON.stringify(session));
+    tokenStore.set(accessToken);
     setUserState(u);
   }
 
   async function clearUser() {
     await SecureStore.deleteItemAsync(STORE_KEY);
+    tokenStore.set(null);
     setUserState(null);
   }
+
+  useEffect(() => {
+    tokenStore.onUnauthorized(clearUser);
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, loading, setUser, clearUser }}>

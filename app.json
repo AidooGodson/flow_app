@@ -5,8 +5,13 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "scheme": "flowwater",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/flow-logo.jpeg",
     "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/flow-logo.jpeg",
+      "resizeMode": "contain",
+      "backgroundColor": "#1E1B72"
+    },
     "ios": {
       "supportsTablet": true
     },
@@ -16,6 +21,11 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "splash": {
+        "image": "./assets/flow-logo.jpeg",
+        "resizeMode": "contain",
+        "backgroundColor": "#1E1B72"
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.qelz_developer.flow"

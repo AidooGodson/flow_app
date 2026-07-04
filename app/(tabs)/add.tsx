@@ -15,7 +15,6 @@ import { useRouter } from 'expo-router';
 import { colors, font, typography, radius, spacing } from '../../constants/theme';
 import { useUser } from '../../lib/UserContext';
 import { api } from '../../lib/api';
-import { UserPicker } from '../../components/UserPicker';
 
 const PRODUCTS = ['Bottled Water', 'Sachet Water', 'Dispenser'] as const;
 const BUYER_TYPES = ['Bulk buyer', 'Medium scale', 'Small scale'] as const;
@@ -47,7 +46,7 @@ function isoDate(d: Date) {
 }
 
 export default function AddReportScreen() {
-  const { user, loading: userLoading } = useUser();
+  const { user } = useUser();
   const router = useRouter();
 
   // Form state
@@ -65,16 +64,6 @@ export default function AddReportScreen() {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
-
-  if (userLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.brand.navy} />
-      </View>
-    );
-  }
-
-  if (!user) return <UserPicker />;
 
   function toggleProduct(p: string) {
     setProducts((prev) =>

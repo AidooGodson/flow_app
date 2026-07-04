@@ -16,7 +16,6 @@ import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { EmptyState } from '../../components/EmptyState';
 import { StatusBadge } from '../../components/StatusBadge';
-import { UserPicker } from '../../components/UserPicker';
 import type { Report } from '../../lib/types';
 
 function fmt(iso: string | null | undefined): string {
@@ -58,7 +57,7 @@ function ReportCard({ report, onPress }: { report: Report; onPress: () => void }
 }
 
 export default function ReportsScreen() {
-  const { user, loading: userLoading } = useUser();
+  const { user } = useUser();
   const router = useRouter();
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(false);
@@ -83,16 +82,6 @@ export default function ReportsScreen() {
   );
 
   useEffect(() => { load(); }, [load]);
-
-  if (userLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={colors.brand.navy} />
-      </View>
-    );
-  }
-
-  if (!user) return <UserPicker />;
 
   if (loading) {
     return (

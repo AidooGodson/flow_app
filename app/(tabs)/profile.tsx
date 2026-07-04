@@ -1,32 +1,28 @@
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { colors, font, typography, radius, shadow } from '../../constants/theme';
 import { useUser } from '../../lib/UserContext';
-import { UserPicker } from '../../components/UserPicker';
 
 export default function ProfileScreen() {
-  const { user, loading, clearUser } = useUser();
+  const { user, clearUser } = useUser();
 
-  if (loading) return <View style={styles.screen} />;
+  if (!user) return null;
 
-  if (!user) return <UserPicker />;
-
-  function handleSwitch() {
+  function handleLogout() {
     Alert.alert(
-      'Switch User',
-      'You will need to select your name again.',
+      'Log Out',
+      'Are you sure you want to log out?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Switch', style: 'destructive', onPress: clearUser },
+        { text: 'Log Out', style: 'destructive', onPress: clearUser },
       ],
     );
   }
 
-  const roleLabel = user.role === 'manager' ? 'Manager' : 'Sales Representative';
+  const roleLabel    = user.role === 'manager' ? 'Manager' : 'Sales Representative';
   const avatarLetter = user.name.charAt(0).toUpperCase();
 
   return (
     <View style={styles.screen}>
-      {/* Avatar header */}
       <View style={styles.avatarSection}>
         <View style={styles.avatar}>
           <Text style={styles.avatarLetter}>{avatarLetter}</Text>
@@ -37,7 +33,6 @@ export default function ProfileScreen() {
         </View>
       </View>
 
-      {/* Info card */}
       <View style={styles.body}>
         <View style={styles.infoCard}>
           <View style={styles.infoRow}>
@@ -51,8 +46,8 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.switchBtn} onPress={handleSwitch} activeOpacity={0.8}>
-          <Text style={styles.switchBtnText}>Switch User</Text>
+        <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout} activeOpacity={0.8}>
+          <Text style={styles.logoutBtnText}>Log Out</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -141,16 +136,17 @@ const styles = StyleSheet.create({
     backgroundColor: colors.gray[100],
     marginVertical: 10,
   },
-  switchBtn: {
+  logoutBtn: {
     borderWidth: 1.5,
-    borderColor: colors.gray[300],
+    borderColor: '#FECACA',
     borderRadius: radius.xl,
     paddingVertical: 14,
     alignItems: 'center',
+    backgroundColor: '#FFF5F5',
   },
-  switchBtnText: {
+  logoutBtnText: {
     ...typography.base,
     fontFamily: font.semibold,
-    color: colors.gray[700],
+    color: colors.brand.red,
   },
 });
