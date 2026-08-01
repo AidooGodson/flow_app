@@ -27,7 +27,6 @@ async function refreshTokens(): Promise<boolean> {
 }
 
 async function request<T>(path: string, options?: RequestInit, isRetry = false): Promise<T> {
-  // Proactively refresh if token is expiring soon
   if (!isRetry && tokenStore.isExpiringSoon()) {
     await refreshTokens();
   }
@@ -42,11 +41,16 @@ async function request<T>(path: string, options?: RequestInit, isRetry = false):
   });
 
   if (res.status === 401 && !isRetry) {
-    // Try refreshing once before giving up
-    const refreshed = await refreshTokens();
-    if (refreshed) return request<T>(path, options, true);
-    tokenStore.unauthorized();
-    throw new Error('Session expired. Please log in again.');
+    // Only attempt refresh if the user is already logged in (has a refresh token)
+    if (tokenStore.getRefresh()) {
+      const refreshed = await refreshTokens();
+      if (refreshed) return request<T>(path, options, true);
+      tokenStore.unauthorized();
+      throw new Error('Session expired. Please log in again.');
+    }
+    // Not logged in — pass the server's error message through directly
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body?.error ?? 'Unauthorized');
   }
 
   if (!res.ok) {
