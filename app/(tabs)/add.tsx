@@ -81,6 +81,21 @@ export default function AddReportScreen() {
     return Object.keys(e).length === 0;
   }
 
+  function resetForm() {
+    setDate(new Date());
+    setShowDatePicker(Platform.OS === 'ios');
+    setCustomerName('');
+    setTelephone('');
+    setLocation('');
+    setProducts([]);
+    setBuyerType('');
+    setComments('');
+    setSummary('');
+    setFollowUpDate(null);
+    setShowFollowPicker(false);
+    setErrors({});
+  }
+
   async function submit() {
     if (!validate()) return;
     setSubmitting(true);
@@ -97,7 +112,8 @@ export default function AddReportScreen() {
         summary: summary.trim() || undefined,
         followUpDate: followUpDate ? isoDate(followUpDate) : undefined,
       });
-      router.replace('/(tabs)/');
+      resetForm();
+      router.navigate('/(tabs)');
     } catch (err: any) {
       Alert.alert('Error', err?.message ?? 'Failed to save report. Please try again.');
     } finally {

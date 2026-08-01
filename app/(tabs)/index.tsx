@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { colors, font, typography, radius, shadow, spacing } from '../../constants/theme';
 import { useUser } from '../../lib/UserContext';
 import { api } from '../../lib/api';
@@ -72,7 +72,7 @@ export default function ReportsScreen() {
       api.reports
         .list(user.id)
         .then((res) => setReports(res.data))
-        .catch(() => setError('Could not load reports. Check your connection.'))
+        .catch((err: any) => setError(err?.message ?? 'Could not load reports.'))
         .finally(() => {
           setLoading(false);
           setRefreshing(false);
@@ -81,7 +81,8 @@ export default function ReportsScreen() {
     [user],
   );
 
-  useEffect(() => { load(); }, [load]);
+  // Reload whenever this tab comes into focus — picks up newly submitted reports
+  useFocusEffect(useCallback(() => { load(); }, [load]));
 
   if (loading) {
     return (
