@@ -31,8 +31,8 @@ export function LoginScreen() {
     setError(null);
     setLoading(true);
     try {
-      const { access_token, user } = await api.auth.login(e, p);
-      await setUser(user, access_token);
+      const { access_token, refresh_token, expires_at, user } = await api.auth.login(e, p);
+      await setUser(user, access_token, refresh_token, expires_at);
     } catch (err: any) {
       setError(err?.message ?? 'Login failed. Please try again.');
     } finally {

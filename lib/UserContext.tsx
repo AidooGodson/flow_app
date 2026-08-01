@@ -8,12 +8,14 @@ const STORE_KEY = 'flow_session';
 interface StoredSession {
   user: User;
   accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
 }
 
 interface UserContextValue {
   user: User | null;
   loading: boolean;
-  setUser: (u: User, accessToken: string) => Promise<void>;
+  setUser: (u: User, accessToken: string, refreshToken: string, expiresAt: number) => Promise<void>;
   clearUser: () => Promise<void>;
 }
 
@@ -32,8 +34,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     SecureStore.getItemAsync(STORE_KEY)
       .then((raw) => {
         if (raw) {
-          const { user: u, accessToken } = JSON.parse(raw) as StoredSession;
-          tokenStore.set(accessToken);
+          const { user: u, accessToken, refreshToken, expiresAt } = JSON.parse(raw) as StoredSession;
+          tokenStore.set(accessToken, refreshToken, expiresAt);
           setUserState(u);
         }
       })
@@ -41,22 +43,35 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       .finally(() => setLoading(false));
   }, []);
 
-  async function setUser(u: User, accessToken: string) {
-    const session: StoredSession = { user: u, accessToken };
+  async function setUser(u: User, accessToken: string, refreshToken: string, expiresAt: number) {
+    const session: StoredSession = { user: u, accessToken, refreshToken, expiresAt };
     await SecureStore.setItemAsync(STORE_KEY, JSON.stringify(session));
-    tokenStore.set(accessToken);
+    tokenStore.set(accessToken, refreshToken, expiresAt);
     setUserState(u);
   }
 
   async function clearUser() {
     await SecureStore.deleteItemAsync(STORE_KEY);
-    tokenStore.set(null);
+    tokenStore.clear();
     setUserState(null);
+  }
+
+  // Persist refreshed tokens without changing the user object
+  async function updateTokens(accessToken: string, refreshToken: string, expiresAt: number) {
+    const raw = await SecureStore.getItemAsync(STORE_KEY);
+    if (!raw) return;
+    const session = JSON.parse(raw) as StoredSession;
+    const updated: StoredSession = { ...session, accessToken, refreshToken, expiresAt };
+    await SecureStore.setItemAsync(STORE_KEY, JSON.stringify(updated));
+    tokenStore.set(accessToken, refreshToken, expiresAt);
   }
 
   useEffect(() => {
     tokenStore.onUnauthorized(clearUser);
   }, []);
+
+  // Expose updateTokens so api.ts can call it after a refresh
+  tokenStore.onTokensRefreshed = updateTokens;
 
   return (
     <UserContext.Provider value={{ user, loading, setUser, clearUser }}>
